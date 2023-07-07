@@ -1,0 +1,310 @@
+mysql> show tables;
++-------------------------+
+| Tables_in_imdb_database |
++-------------------------+
+| artist                  |
+| artist_skill            |
+| film_role               |
+| genre                   |
+| media                   |
+| movie                   |
+| movie_genre             |
+| review                  |
+| skill                   |
+| user                    |
++-------------------------+
+10 rows in set (0.00 sec)
+
+
+
+mysql>CREATE TABLE Movie (
+    movie_id  varchar,
+    title VARCHAR(255),
+    release_year INT,
+    duration INT,
+    description TEXT,
+    imdb_rating DECIMAL(3,1),
+    director VARCHAR(255),
+    -- Add more relevant columns
+);
+
+mysql> select *from movie;
++-----------+------------------------------+--------------+----------+-----------------------------------------------------------------------------------+-------------+-------------------+
+| movie_id  | title                        | release_year | duration | description
+                                 | imdb_rating | director          |
++-----------+------------------------------+--------------+----------+-----------------------------------------------------------------------------------+-------------+-------------------+
+| tt0012349 | The Kid                      |         1921 |       90 | 2 wins
+                                 |         8.3 | Charles Chaplin   |
+| tt0031678 | Mr. Smith Goes to Washington |         1939 |      148 | A classic romantic drama set during World War II                                  |         8.5 | Frank Capra       |
+| tt0031679 | Casablanca                   |         1942 |      102 | A classic romantic drama set during World War II                                  |         8.5 | Michael Curtiz    |
+| tt0046912 | Dial M for Murder            |         1954 |      105 | A suspenseful crime thriller
+                                 |         7.9 | Alfred Hitchcock  |
+| tt1234567 | Inception                    |         2010 |      148 | A thief who steals corporate secrets through the use of dream-sharing technology. |         8.8 | Christopher Nolan |
++-----------+------------------------------+--------------+----------+-----------------------------------------------------------------------------------+-------------+-------------------+
+5 rows in set (0.00 sec)
+
+
+
+-- Skill table
+CREATE TABLE Skill (
+    skill_id INT PRIMARY KEY,
+    name VARCHAR(255)
+);
+-- INSERTING skill table
+INSERT INTO skill (skill_id, name)
+VALUES (1, "Acting"),
+       (2, "Directing"),
+       (3, "Cinematography"),
+       (4, "Screenwriting"),
+       (5, "Editing");
+
+mysql> select *from skill;
++----------+----------------+
+| skill_id | name           |
++----------+----------------+
+|        1 | Acting         |
+|        2 | Directing      |
+|        3 | Cinematography |
+|        4 | Screenwriting  |
+|        5 | Editing        |
++----------+----------------+
+5 rows in set (0.00 sec)
+
+
+
+-- Review table
+CREATE TABLE Review (
+    review_id INT PRIMARY KEY,
+    movie_id VARCHAR(255),
+    user_id INT,
+    rating DECIMAL(3,2),
+    comment TEXT,
+    review_date DATE
+);
+-- INSERTING review table
+INSERT INTO review (review_id, movie_id, user_id, rating, comment, review_date)
+VALUES (1, "tt0012349", 1, 8.3, "Great movie!", "2022-02-15"),
+       (2, "tt0031678", 2, 8.5, "Amazing film!", "2022-03-10"),
+       (3, "tt0031679", 3, 8.5, "Classic masterpiece!", "2022-04-20"),
+       (4, "tt0046912", 4, 7.9, "Suspenseful thriller!", "2022-06-05"),
+       (5, "tt1234567", 5, 8.8, "Mind-blowing!", "2022-08-15");
+
+mysql> select *from review;
++-----------+-----------+---------+--------+-----------------------+-------------+
+| review_id | movie_id  | user_id | rating | comment               | review_date |
++-----------+-----------+---------+--------+-----------------------+-------------+
+|         1 | tt0012349 |       1 |   8.30 | Great movie!          | 2022-02-15  |
+|         2 | tt0031678 |       2 |   8.50 | Amazing film!         | 2022-03-10  |
+|         3 | tt0031679 |       3 |   8.50 | Classic masterpiece!  | 2022-04-20  |
+|         4 | tt0046912 |       4 |   7.90 | Suspenseful thriller! | 2022-06-05  |
+|         5 | tt1234567 |       5 |   8.80 | Mind-blowing!         | 2022-08-15  |
++-----------+-----------+---------+--------+-----------------------+-------------+
+5 rows in set (0.00 sec)
+
+
+
+-- Movie_Genre table
+CREATE TABLE Movie_Genre (
+    movie_id VARCHAR(255),
+    genre_id INT,
+    FOREIGN KEY (movie_id) REFERENCES Movie(movie_id),
+    FOREIGN KEY (genre_id) REFERENCES Genre(genre_id),
+    PRIMARY KEY (movie_id, genre_id)
+);
+-- INSERTING movie_genre table
+INSERT INTO movie_genre (movie_id, genre_id)
+VALUES ("tt0012349", 1),
+       ("tt0031678", 2),
+       ("tt0031679", 2),
+       ("tt0046912", 3),
+       ("tt1234567", 4);
+
+mysql> select *from movie_genre;
++-----------+----------+
+| movie_id  | genre_id |
++-----------+----------+
+| tt0012349 |        1 |
+| tt0031678 |        2 |
+| tt0031679 |        2 |
+| tt0046912 |        3 |
+| tt1234567 |        4 |
++-----------+----------+
+5 rows in set (0.00 sec)
+
+
+
+-- Artist table
+CREATE TABLE Artist (
+    artist_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    nationality VARCHAR(255),
+    birth_date DATE
+);
+-- INSERTING artist table
+INSERT INTO artist (artist_id, name, nationality, birth_date)
+VALUES (1, "Charles Chaplin", "British", "1889-04-16"),
+       (2, "Frank Capra", "Italian-American", "1897-05-18"),
+       (3, "Michael Curtiz", "Hungarian-American", "1886-12-24"),
+       (4, "Alfred Hitchcock", "British", "1899-08-13"),
+       (5, "Christopher Nolan", "British-American", "1970-07-30");
+
+mysql> select *from artist;
++-----------+-------------------+--------------------+------------+
+| artist_id | name              | nationality        | birth_date |
++-----------+-------------------+--------------------+------------+
+|         1 | Charles Chaplin   | British            | 1889-04-16 |
+|         2 | Frank Capra       | Italian-American   | 1897-05-18 |
+|         3 | Michael Curtiz    | Hungarian-American | 1886-12-24 |
+|         4 | Alfred Hitchcock  | British            | 1899-08-13 |
+|         5 | Christopher Nolan | British-American   | 1970-07-30 |
++-----------+-------------------+--------------------+------------+
+5 rows in set (0.00 sec)
+
+
+
+-- Media table
+CREATE TABLE Media (
+    media_id INT PRIMARY KEY,
+    movie_id VARCHAR(255),
+    media_type VARCHAR(255),
+    url VARCHAR(255)
+    -- Add more relevant columns
+);
+-- INSERTING media table
+INSERT INTO media (media_id, movie_id, media_type, url)
+VALUES (1, "tt0012349", "Image", "https://example.com/the-kid.jpg"),
+       (2, "tt0031678", "Image", "https://example.com/mr-smith-goes-to-washington.jpg"),
+       (3, "tt0031679", "Image", "https://example.com/casablanca.jpg"),
+       (4, "tt0046912", "Image", "https://example.com/dial-m-for-murder.jpg"),
+       (5, "tt1234567", "Image", "https://example.com/inception.jpg");
+
+mysql> select *from media;
++----------+-----------+------------+-----------------------------------------------------+
+| media_id | movie_id  | media_type | url                                                 |
++----------+-----------+------------+-----------------------------------------------------+
+|        1 | tt0012349 | Image      | https://example.com/the-kid.jpg                     |
+|        2 | tt0031678 | Image      | https://example.com/mr-smith-goes-to-washington.jpg |
+|        3 | tt0031679 | Image      | https://example.com/casablanca.jpg                  |
+|        4 | tt0046912 | Image      | https://example.com/dial-m-for-murder.jpg           |
+|        5 | tt1234567 | Image      | https://example.com/inception.jpg                   |
++----------+-----------+------------+-----------------------------------------------------+
+5 rows in set (0.00 sec)
+
+
+
+-- Artist_Skill table
+CREATE TABLE Artist_Skill (
+    artist_id INT,
+    skill_id INT,
+    FOREIGN KEY (artist_id) REFERENCES Artist(artist_id),
+    FOREIGN KEY (skill_id) REFERENCES Skill(skill_id),
+    PRIMARY KEY (artist_id, skill_id)
+);
+-- INSERTING artist_skill table
+INSERT INTO artist_skill (artist_id, skill_id)
+VALUES (1, 1),
+       (2, 2),
+       (3, 3),
+       (4, 4),
+       (5, 5);
+
+mysql> select *from artist_skill;
++-----------+----------+
+| artist_id | skill_id |
++-----------+----------+
+|         1 |        1 |
+|         2 |        2 |
+|         3 |        3 |
+|         4 |        4 |
+|         5 |        5 |
++-----------+----------+
+5 rows in set (0.00 sec)
+
+
+
+-- film_role table
+CREATE TABLE Film_Role (
+    role_id INT PRIMARY KEY,
+    movie_id VARCHAR(255),
+    artist_id INT,
+    role_name VARCHAR(255),
+    role_description TEXT
+);
+-- INSERTING film_role table
+INSERT INTO film_role (role_id, movie_id, artist_id, role_name)
+VALUES (1, "tt0012349", 1, "Actor"),
+       (2, "tt0031678", 2, "Director"),
+       (3, "tt0031679", 3, "Director"),
+       (4, "tt0046912", 4, "Director"),
+       (5, "tt1234567", 5, "Director");
+
+mysql> select *from film_role;
++---------+-----------+-----------+-----------+
+| role_id | movie_id  | artist_id | role_name |
++---------+-----------+-----------+-----------+
+|       1 | tt0012349 |         1 | Actor     |
+|       2 | tt0031678 |         2 | Director  |
+|       3 | tt0031679 |         3 | Director  |
+|       4 | tt0046912 |         4 | Director  |
+|       5 | tt1234567 |         5 | Director  |
++---------+-----------+-----------+-----------+
+5 rows in set (0.00 sec)
+
+
+
+
+-- Genre table
+CREATE TABLE Genre (
+    genre_id INT PRIMARY KEY,
+    name VARCHAR(255),
+    description TEXT
+);
+-- INSERTING genre table
+INSERT INTO genre (genre_id, name)
+VALUES (1, "Drama"),
+       (2, "Romance"),
+       (3, "Crime"),
+       (4, "Thriller"),
+       (5, "Action");
+
+mysql> select * from genre;
++----------+----------+
+| genre_id | name     |
++----------+----------+
+|        1 | Drama    |
+|        2 | Romance  |
+|        3 | Crime    |
+|        4 | Thriller |
+|        5 | Action   |
++----------+----------+
+5 rows in set (0.00 sec)
+
+
+
+-- User table
+CREATE TABLE User (
+    user_id INT PRIMARY KEY,
+    username VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255),
+    registration_date DATE
+);
+--INSERTING  user table
+INSERT INTO user (user_id, username, email, password, registration_date)
+VALUES (1, "user1", "user1@example.com", "password1", "2022-01-01"),
+       (2, "user2", "user2@example.com", "password2", "2022-02-01"),
+       (3, "user3", "user3@example.com", "password3", "2022-03-01"),
+       (4, "user4", "user4@example.com", "password4", "2022-04-01"),
+       (5, "user5", "user5@example.com", "password5", "2022-05-01");
+
+mysql> select * from user;
++---------+----------+-------------------+-----------+-------------------+
+| user_id | username | email             | password  | registration_date |
++---------+----------+-------------------+-----------+-------------------+
+|       1 | user1    | user1@example.com | password1 | 2022-01-01        |
+|       2 | user2    | user2@example.com | password2 | 2022-02-01        |
+|       3 | user3    | user3@example.com | password3 | 2022-03-01        |
+|       4 | user4    | user4@example.com | password4 | 2022-04-01        |
+|       5 | user5    | user5@example.com | password5 | 2022-05-01        |
++---------+----------+-------------------+-----------+-------------------+
+5 rows in set (0.00 sec)       
